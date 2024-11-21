@@ -1,0 +1,7 @@
+POST http://localhost:3001/api/blogs/66ed3cd31541546bb51ea2af/comments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imx1Y2FzIiwiaWQiOiI2NmVkNDY3NGRhNTMxODk0NTkwY2IyMmMiLCJpYXQiOjE3MjgzNjQxODUsImV4cCI6MTcyODM2Nzc4NX0.vyw52irO9DgqV_90TrYZiqGJrZQZAQJX-KqI7ABgBu4
+
+{
+  "content": "a random comment"
+}

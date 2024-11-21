@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imx1Y2FzIiwiaWQiOiI2NmVkNDY3NGRhNTMxODk0NTkwY2IyMmMiLCJpYXQiOjE3MjY4MjcxOTgsImV4cCI6MTcyNjgzMDc5OH0.Tk0q2UqiLcm27RGreueDWp9M6AfTjaQFa5EMl6rTr2I
+
+{
+    "title": "Bing",
+    "author": "Bing Ca",
+    "url": "bing.com",
+    "likes": 40
+}

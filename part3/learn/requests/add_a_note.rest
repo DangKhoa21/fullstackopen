@@ -1,0 +1,8 @@
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY2ZWMxMWI0MTQzODk4OWVmYTc4MDdiMyIsImlhdCI6MTcyNjc2NzM3N30.3HuCrZOMm-Vl9XuyC3MiAMwFSRSxLf-mGmM4lpki7kU
+
+{
+    "content": "This is for login",
+    "important": true
+}
