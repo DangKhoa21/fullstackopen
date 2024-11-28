@@ -5,6 +5,12 @@ const User = require('../models/user')
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
+  if (!username || !name || !password) {
+    return response.status(400).json({
+      error: 'missing username, name or password'
+    })
+  }
+
   if (password.length < 3) {
     return response.status(400).json({
       error: 'password is shorter than the minimum allowed length (3)'
@@ -22,7 +28,7 @@ usersRouter.post('/', async (request, response) => {
 
   const savedUser = await user.save()
 
-  response.status(201).json(savedUser)
+  response.status(201).json({ username: savedUser.username, name: savedUser.name })
 })
 
 usersRouter.get('/', async (request, response) => {

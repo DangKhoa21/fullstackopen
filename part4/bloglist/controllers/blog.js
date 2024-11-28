@@ -51,14 +51,26 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
   const requesterId = request.auth.id
-  const blog = await Blog.findById(request.params.id)
+  const blogId = request.params.id
+  const blog = await Blog.findById(blogId)
   if (!blog) {
     return response.status(404).end()
   }
   if (blog.user.toString() !== requesterId) {
     return response.status(401).json({ error: 'unauthorized action' })
   }
+
+  //delete blog in Blog
   await blog.deleteOne()
+
+  //delete blog in Comment
+  await Comment.deleteMany({ blog: blogId })
+
+  //delete blog in User
+  const user = await User.findById(requesterId)
+  user.blogs = user.blogs.filter(b => b.toString() !== blogId)
+  await user.save()
+
   response.status(204).end()
 })
 

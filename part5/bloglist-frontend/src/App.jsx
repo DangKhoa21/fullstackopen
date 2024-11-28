@@ -1,28 +1,13 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useEffect, useRef, useContext } from "react";
 import Blog from "./components/Blog";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
-import BlogForm from "./components/BlogForm";
 import NotFound from "./components/NotFound";
+import User from "./pages/User";
+import Users from "./pages/Users";
+import Home from "./pages/Home";
 import Notification from "./components/Notification";
-import Togglable from "./components/Togglable";
 import Menu from "./components/Menu";
-
-import {
-  Box,
-  Typography, 
-  CircularProgress, 
-  TableContainer, 
-  Table, 
-  TableHead, 
-  TableRow, 
-  TableCell, 
-  TableBody ,
-  Paper,
-  Card,
-  CardContent,
-  CardActionArea
-} from "@mui/material";
 
 import blogService from "./services/blogs";
 import usersService from "./services/users";
@@ -31,12 +16,7 @@ import UserContext from "./contexts/UserContext";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import "./App.css";
 
-import { 
-  Routes, 
-  Route,
-  Link,
-  useMatch
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 const App = () => {
   const [, notificationDispatch] = useContext(NotificationContext);
@@ -94,99 +74,12 @@ const App = () => {
     }
   };
   
-  const Home = () => (
-    <Box sx={{ padding: 1 }}>
-      <Typography variant="h4">Blogs App</Typography>
-      <Togglable buttonLabel="New Blog" ref={togglableRef}>
-        <BlogForm addBlog={(blog) => createBlogMutation.mutate(blog)} />
-      </Togglable>
-  
-      {blogsQuery.isPending && <CircularProgress />}
-      {blogsQuery.isError && <Typography color="error">{blogsQuery.error.message}</Typography>}
-  
-      {blogs && blogs
-        .sort((a, b) => b.likes - a.likes)
-        .map((blog) => (
-          <Card key={blog.id} sx={{ marginBottom: 2 }}>
-            <CardActionArea component={Link} to={`/blogs/${blog.id}`}>
-              <CardContent>
-                <Typography variant="h6">
-                    {blog.title}
-                </Typography>
-                <Typography color="textSecondary">by {blog.author}</Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        ))}
-    </Box>
-  )
-
   const usersQuery = useQuery({
     queryKey: ["users"],
     queryFn: usersService.getAll,
     retry: 2
   })
   const users = usersQuery.data
-
-  const Users = () => (
-    <div>
-      <Typography variant="h6">Users</Typography>
-      {usersQuery.isPending && <CircularProgress />}
-      {usersQuery.isError && <Typography color="error">{usersQuery.error.message}</Typography>}
-      {users && (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>User</TableCell>
-                <TableCell align="right">Blogs Created</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    <Link to={`/users/${user.id}`}>{user.name}</Link>
-                  </TableCell>
-                  <TableCell align="right">{user.blogs.length}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-    </div>
-  )
-
-  const User = () => {
-    const match = useMatch("/users/:id")
-    
-    if (usersQuery.isPending) {
-      return <CircularProgress />;
-    }
-    if (usersQuery.isError) {
-      return <Typography color="error">{usersQuery.error.message}</Typography>;
-    }
-  
-    const user = match ? users.find(user => user.id === match.params.id) : null;
-    if (!user) {
-      return <Typography variant="h6">User not found</Typography>;
-    }
-  
-    return (
-      <div>
-        <Typography variant="h6">{user.name}</Typography>
-        <Typography variant="body1">Added Blogs:</Typography>
-        <Typography component='ul'>
-          {user.blogs.map((blog) => (
-            <Typography key={blog.id} component='li'>
-              <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-            </Typography>
-          ))}
-        </Typography>
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -205,10 +98,10 @@ const App = () => {
           <Menu user={user} logout={logout} />
 
           <Routes>
-            <Route path="/users/:id" element={<User />} />
-            <Route path="/users" element={<Users />} />
+            <Route path="/users/:id" element={<User users={users} usersQuery={usersQuery}/>} />
+            <Route path="/users" element={<Users users={users} usersQuery={usersQuery}/>} />
             <Route path="/blogs/:id" element={<Blog />} />
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home blogs={blogs} blogsQuery={blogsQuery} createBlogMutation={createBlogMutation} togglableRef={togglableRef}/>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

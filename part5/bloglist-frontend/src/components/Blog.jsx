@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useContext } from "react";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from "../services/blogs";
+import UserContext from "../contexts/UserContext";
 import {
-  useMatch
+  useMatch,
+  useNavigate
 } from "react-router-dom";
 import CommentForm from "./CommentForm";
 import CommentsList from "./CommentsList";
@@ -14,6 +16,8 @@ import {
 } from "@mui/material";
 
 const Blog = () => {
+  const navigate = useNavigate();
+  const [user, , , ] = useContext(UserContext);
   const queryClient = useQueryClient();
 
   const match = useMatch("/blogs/:id");
@@ -34,20 +38,20 @@ const Blog = () => {
     }
   })
 
-  // const removeBlogMutation = useMutation({
-  //   mutationFn: blogService.deleteOne,
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["blogs"] });
-  //   },
-  //   onError: (error) => {
-  //     console.log(error.response?.data?.error || "An error occurred")
-  //   }
-  // })
-  // const removeBlog = (blog) => {
-  //   if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-  //     removeBlogMutation.mutate(blog.id)
-  //   }
-  // };
+  const removeBlogMutation = useMutation({
+    mutationFn: blogService.deleteOne,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+    },
+    onError: (error) => {
+      console.log(error.response?.data?.error || "An error occurred")
+    }
+  })
+  const removeBlog = (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      removeBlogMutation.mutate(blog.id)
+    }
+  };
 
   const addCommentMutation = useMutation({
     mutationFn: blogService.addComment,
@@ -68,9 +72,10 @@ const Blog = () => {
     likeBlogMutation.mutate({ id: blog.id, newObject: updatedBlog });
   };
 
-  // const handleRemove = () => {
-  //   removeBlog(blog);
-  // };
+  const handleRemove = () => {
+    removeBlog(blog);
+    navigate("/");
+  };
 
   const addComment = (comment) => {
     addCommentMutation.mutate({ id: blog.id, newComment: { content: comment } });
@@ -103,6 +108,19 @@ const Blog = () => {
         <CommentForm addComment={addComment} />
         <CommentsList comments={blog.comments} />
       </Box>
+
+      {user.id === blog.user.id &&
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button 
+            variant="contained" 
+            color="secondary" 
+            sx={{ marginTop: 2, alignItems: 'end' }}
+            onClick={handleRemove}
+          >
+            Delete this blog
+          </Button>
+        </Box>
+      }
     </Box>
   );
 };
