@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import Blog from "./components/Blog";
 import LoginForm from "./components/LoginForm";
+import RegisterForm from "./components/RegisterForm";
 import BlogForm from "./components/BlogForm";
+import NotFound from "./components/NotFound";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import Menu from "./components/Menu";
@@ -77,6 +79,19 @@ const App = () => {
 
   const verifyLogin = async ({ username, password }) => {
     login(username, password);
+  };
+
+  const register = async ({ username, name, password, password2 }) => {
+    if (password !== password2) {
+      notify("ERROR", "Passwords do not match");
+      return;
+    }
+    try {
+      const user = await usersService.create({ username, name, password });
+      notify("SUCCESS", `User ${user.name} created`);
+    } catch (error) {
+      notify("ERROR", error.response?.data?.error || "An error occurred");
+    }
   };
   
   const Home = () => (
@@ -178,7 +193,11 @@ const App = () => {
       {!user ? (
         <div>
           <Notification />
-          <LoginForm verifyLogin={verifyLogin} />
+
+          <Routes>
+            <Route path="/register" element={<RegisterForm register={register} />} />
+            <Route path="*" element={<LoginForm verifyLogin={verifyLogin} />} />
+          </Routes>
         </div>
       ) : (
         <div>
@@ -190,6 +209,7 @@ const App = () => {
             <Route path="/users" element={<Users />} />
             <Route path="/blogs/:id" element={<Blog />} />
             <Route path="/" element={<Home />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       )}
