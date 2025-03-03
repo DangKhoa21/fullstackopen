@@ -1,0 +1,3 @@
+[submodule "pokedex"] 
+  path = part11/full-stack-open-pokedex
+  url = https://github.com/DangKhoa21/full-stack-open-pokedex.git
