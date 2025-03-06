@@ -27,14 +27,18 @@ The FullStackOpen course is divided into several parts, which include the follow
 
 I have completed the following parts and received certificates which are also available in the `certificates/` folder:
 
-- **Full Stack Certificate**: 
+- **Full Stack Certificate**:
 
 ![Full Stack Certificate](certificates/certificate-fullstack.png)
 
-- **GraphQL Certificate**: 
+- **GraphQL Certificate**:
 
 ![GraphQL Certificate](certificates/certificate-graphql.png)
 
-- **TypeScript Certificate**: 
+- **TypeScript Certificate**:
 
 ![TypeScript Certificate](certificates/certificate-typescript.png)
+
+- **Containers Certificate**:
+
+![Containers Certificate](certificates/certificate-containers.png)
