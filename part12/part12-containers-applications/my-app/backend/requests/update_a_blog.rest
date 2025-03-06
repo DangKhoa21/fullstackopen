@@ -1,0 +1,8 @@
+PUT http://localhost:3001/api/blogs/66e9ab1a3dd2614154e4b195
+Content-Type: application/json
+
+{
+    "title": "Google",
+    "author": "Larry Page",
+    "likes": 80
+}

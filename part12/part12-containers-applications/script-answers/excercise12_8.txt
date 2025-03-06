@@ -1,0 +1,10 @@
+docker start todo-backend-mongo-1
+docker exec -it todo-backend-mongo-1 sh
+mongosh -u the_username -p the_password
+use the_database
+show collections
+db.todos.find()
+db.todos.insertOne({ text: 'Increase the number of tools in my tool belt', done: false })
+db.todos.find()
+exit
+exit

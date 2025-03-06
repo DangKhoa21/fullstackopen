@@ -1,0 +1,41 @@
+services:
+  app:
+    image: blog-fe-dev
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./frontend:/usr/src/app
+    container_name: blog-fe-dev
+
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: the_username
+      MONGO_INITDB_ROOT_PASSWORD: the_password
+      MONGO_INITDB_DATABASE: the_database
+    container_name: blog-mongo
+
+  server:
+    image: blog-be-dev
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./backend:/usr/src/app
+    environment:
+      - PORT=3000
+      - SECRET=sekcret
+      - MONGODB_URI=mongodb://the_username:the_password@mongo:27017/the_database
+    container_name: blog-be-dev
+
+  nginx:
+    image: nginx:1.25-alpine
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80 # this is needed
+    container_name: reverse-proxy
+    depends_on:
+      - app # wait for the frontend container to be started
+      - server # wait for the backend container to be started
